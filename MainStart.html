@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>Enter Your Details</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Please use a laptop or computer to access your hints:</h1>
+
+        <form id="detailsForm">
+            <label for="name">First Name:</label><br>
+            <input type="text" id="name" name="name" required><br>
+        
+            <input type="submit" value="Submit">
+        </form>
+        
+        <script>
+            document.getElementById('detailsForm').onsubmit = function(event) {
+                event.preventDefault(); // Prevent the form from submitting in the traditional way
+    
+                var name = document.getElementById('name').value.trim();
+    
+                // Check if the entered name is "Maritess"
+                if (name === "Maritess" || name === "maritess" || name === "Ma Theresa Guadalupe" || name === "ma theresa guadalupe") {
+                    // If the name is "Maritess", redirect to the 'AdingGame1.html' page
+                    window.location.href = 'Maritess.html';
+                }
+                // Check if the entered name is "Eleanor"
+                else if (name === "Eleanor" || name === "eleanor"){
+                    // If the name is "Eleanor", show a thank you alert
+                    window.location.href = 'Eleanor.html';
+                }
+                else {
+                    // If the name is not allowed, inform the user
+                    alert("Sorry, you are not authorized to submit this form.");
+                }
+            };
+        </script>
+    </body>
+</html>
