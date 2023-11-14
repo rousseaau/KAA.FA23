@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>Eleanor KAA</title>
+        <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            background: #eee;
+            display: block;
+            margin: 0 auto;
+        }
+        </style>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="700" height="700"></canvas>
+
+        <script>
+            const canvas = document.getElementById("myCanvas");
+            const ctx = canvas.getContext("2d");
+            var x = 0;
+            var y = 0;
+            var char1 = new Image();
+            var endtile = new Image();
+            var genie = new Image();
+
+            char1.src = './assets/ading2.png';
+
+            char1.onload = function() {
+                ctx.drawImage(char1, x, y, char1.width, char1.height);
+            };
+
+            endtile.src = './assets/endtile.png'; 
+
+            endtile.onload = function() {
+                ctx.drawImage(endtile, 190, 630, endtile.width, endtile.height);
+            };
+
+            genie.src = './assets/genie.png'; 
+
+            genie.onload = function() {
+                ctx.drawImage(genie, 560,90, genie.width/30, genie.height/30);
+            };
+
+
+            var walls = [
+            //Horizontal walls
+            {x:50, y:70, width:190, height:10},
+            {x:50, y:130, width:60, height:10},
+            {x:0, y:220, width:50, height:10},
+            {x:110, y:310, width:60, height:10},
+            {x:50, y:400, width:60, height:10},
+            {x:50, y:620, width:60, height:10},
+            {x:180, y:210, width:50, height:10},
+            {x:120, y:450, width:50, height:10},
+            {x:180, y:540, width:60, height:10},
+            {x:240, y:120, width:240, height:10},
+            {x:290, y:300, width:60, height:10},
+            {x:240, y:390, width:180, height:10},
+            {x:290, y:30, width:190, height:10},
+            {x:240, y:630, width:50, height:10},
+            {x:290, y:630, width:410, height:10},
+            {x:350, y:540, width:290, height:10},
+            {x:410, y:300, width:70, height:10},
+            {x:470, y:450, width:90, height:10},
+            {x:470, y:210, width:230, height:10},
+            {x:550, y:80, width:80, height:10},
+
+            //Vertical
+            {x:50, y:80, width:10, height:50},
+            {x:110, y:130, width:10, height:100},
+            {x:50, y:220, width:10, height:180},
+            {x:110, y:400, width:10, height:230},
+            {x:50, y:490, width:10, height:130},
+            {x:170, y:160, width:10, height:210},
+            {x:230, y:80, width:10, height:50},
+            {x:230, y:210, width:10, height:330},
+            {x:180, y:540, width:10, height:160},
+            {x:290, y:130, width:10, height:80},
+            {x:350, y:210, width:10, height:340},
+            {x:290, y:0, width:10, height:40},
+            {x:470, y:0, width:10, height:40},
+            {x:410, y:120, width:10, height:190},
+            {x:240, y:630, width:10, height:70},
+            {x:290, y:480, width:10, height:150},
+            {x:630, y:300, width:10, height:240},
+            {x:410, y:400, width:10, height:60},
+            {x:470, y:300, width:10, height:70},
+            {x:550, y:220, width:10, height:230},
+            {x:470, y:120, width:10, height:90},
+            {x:630, y:80, width:10, height:130},
+            {x:550, y:80, width:10, height:50},
+            ]
+
+            function isCollidingWithWalls(x, y, width, height) {
+                for (var i = 0; i < walls.length; i++) {
+                    var wall = walls[i];
+                    if (x < wall.x + wall.width &&
+                        x + width > wall.x &&
+                        y < wall.y + wall.height &&
+                        y + height > wall.y) {
+                        // Collision detected
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            end_dim = 50;
+            end_dim2 = 70;
+            end_x = 190;
+            end_y = 630;
+            char1_w = char1.width;
+            char1_h = char1.height;
+            function isCollidingWithEnd(x, y, char1_w, char1_h, end_x, end_y, end_dim, end_dim2) {
+                if (x < end_x + end_dim &&
+                    x + char1_w > end_x &&
+                    y < end_y + end_dim2 &&
+                    y + char1_h > end_y) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            obstacle_dim = 70;
+            obstacle_dim2 = 70;
+            obstacle_x = 560;
+            obstacle_y = 90;
+            char1_w = char1.width;
+            char1_h = char1.height;
+            function isCollidingWithSecret(x, y, char1_w, char1_h, obstacle_x, obstacle_y, obstacle_dim, obstacle_dim2) {
+                if (x < obstacle_x + obstacle_dim &&
+                    x + char1_w > obstacle_x &&
+                    y < obstacle_y + obstacle_dim2 &&
+                    y + char1_h > obstacle_y) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            function drawMaze() {
+                walls.forEach(function(wall) {
+                    ctx.beginPath();
+                    ctx.rect(wall.x, wall.y, wall.width, wall.height);
+                    ctx.fillStyle = "#FF0000";
+                    ctx.fill();
+                    ctx.closePath();
+                }); 
+            }
+
+            function drawObstacle(){
+                ctx.beginPath();
+                ctx.rect(560, 90, 70, 70);
+                ctx.fillStyle = "#EEEEEE";
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawMaze();
+                drawObstacle();
+                char1.onload();
+                endtile.onload();
+
+                if (isCollidingWithSecret(x, y, char1.width, char1.height, obstacle_x, obstacle_y, obstacle_dim, obstacle_dim)) {
+                    genie.onload();
+                }
+            }
+
+            // Object to keep track of which keys are currently pressed
+            var keysPressed = {};
+
+            // Function to update the position based on which keys are pressed
+            function updatePosition() {
+                newX = x;
+                newY = y;
+                if (keysPressed['w'] || keysPressed['W']) {
+                    newY -= 5; // North
+                }
+                if (keysPressed['s'] || keysPressed['S']) {
+                    newY += 5; // South
+                }
+                if (keysPressed['a'] || keysPressed['A']) {
+                    newX -= 5; // West
+                }
+                if (keysPressed['d'] || keysPressed['D']) {
+                    newX += 5; // East
+                }
+
+                //Collision Detection
+
+                if (!isCollidingWithWalls(newX, newY, char1.width, char1.height)) {
+                    // Update position if no collision
+                    x = newX;
+                    y = newY;
+                }
+
+                // Ensure x is within the bounds of 0 and canvas.width - charWidth
+                if (newX < 0) {
+                    x = 0;
+                } else if (newX > canvas.width - char1.width) {
+                    x = canvas.width - char1.width;
+                }
+
+                // Ensure y is within the bounds of 0 and canvas.height - charHeight
+                if (newY < 0) {
+                    y = 0;
+                } else if (newY > canvas.height - char1.height) {
+                    y = canvas.height - char1.height;
+                }
+
+                if (isCollidingWithEnd(x, y, char1.width, char1.height, end_x, end_y, end_dim, end_dim)) {
+                    window.open('EleanorHint.html', '_blank');
+                    x = 0;
+                    y = 0;
+                }
+
+                draw();
+            }
+
+
+            // Keydown event listener
+            document.addEventListener("keydown", function(event) {
+                keysPressed[event.key.toLowerCase()] = true;
+                updatePosition();
+            });
+
+            // Keyup event listener
+            document.addEventListener("keyup", function(event) {
+                keysPressed[event.key.toLowerCase()] = false;
+            });
+
+            setInterval(draw, 10);            
+
+        </script>
+    </body>
+</html>
